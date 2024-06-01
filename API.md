@@ -156,3 +156,13 @@ This document provides an overview and usage guide for the Ecommerce API, which 
   - `id` (path): The ID of the review to delete.
 - **Response:**
   - `204 No Content`
+
+Summary of Relationships
+Category-Product Relationship:
+
+A Category can have multiple Product entities (one-to-many relationship).
+A Product belongs to a single Category (many-to-one relationship).
+Product-Review Relationship:
+
+A Product can have multiple Review entities (one-to-many relationship).
+A Review is associated with a single Product (many-to-one relationship).
