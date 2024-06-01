@@ -157,12 +157,64 @@ This document provides an overview and usage guide for the Ecommerce API, which 
 - **Response:**
   - `204 No Content`
 
-Summary of Relationships
-Category-Product Relationship:
+# Ecommerce API Entity Relationships
 
-A Category can have multiple Product entities (one-to-many relationship).
-A Product belongs to a single Category (many-to-one relationship).
-Product-Review Relationship:
+## Product
 
-A Product can have multiple Review entities (one-to-many relationship).
-A Review is associated with a single Product (many-to-one relationship).
+### Fields:
+- **id** (Long): The unique identifier for the product.
+- **name** (String): The name of the product.
+- **description** (String): A description of the product.
+- **price** (Double): The price of the product.
+- **discount** (Double): Any discount applied to the product.
+- **stock** (Integer): The available stock of the product.
+- **category** (Category): The category to which the product belongs.
+- **reviews** (Set<Review>): A set of reviews associated with the product.
+
+### Relationships:
+- **Many-to-One with Category:**
+  - A product belongs to one category.
+  - Annotated with `@ManyToOne` and `@JoinColumn(name = "category_id")`.
+  - `@JsonBackReference` is used to manage the bi-directional relationship in JSON serialization, preventing infinite recursion.
+- **One-to-Many with Review:**
+  - A product can have multiple reviews.
+  - Annotated with `@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)`.
+  - The `mappedBy` attribute specifies that the `product` field in the `Review` class owns the relationship.
+
+## Category
+
+### Fields:
+- **id** (Long): The unique identifier for the category.
+- **name** (String): The name of the category.
+- **products** (List<Product>): A list of products associated with the category.
+
+### Relationships:
+- **One-to-Many with Product:**
+  - A category can have multiple products.
+  - Annotated with `@OneToMany(mappedBy = "category")`.
+  - `@JsonManagedReference` is used to manage the bi-directional relationship in JSON serialization, paired with `@JsonBackReference` in the `Product` class.
+
+## Review
+
+### Fields:
+- **id** (Long): The unique identifier for the review.
+- **customerName** (String): The name of the customer who wrote the review.
+- **content** (String): The content of the review.
+- **rating** (Integer): The rating given by the customer.
+- **product** (Product): The product to which the review is associated.
+
+### Relationships:
+- **Many-to-One with Product:**
+  - A review is associated with one product.
+  - Annotated with `@ManyToOne` and `@JoinColumn(name = "product_id")`.
+
+## Summary of Relationships
+
+### Category-Product Relationship:
+- A `Category` can have multiple `Product` entities (one-to-many relationship).
+- A `Product` belongs to a single `Category` (many-to-one relationship).
+
+### Product-Review Relationship:
+- A `Product` can have multiple `Review` entities (one-to-many relationship).
+- A `Review` is associated with a single `Product` (many-to-one relationship).
+
